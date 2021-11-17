@@ -1,0 +1,38 @@
+version: '3'
+
+services:
+  bitcoin-jvm:
+    image: quarkus/bitcoin:latest
+    build:
+      context: ./
+      dockerfile: src/main/docker/Dockerfile.${QUARKUS_MODE:-jvm}
+    environment:
+      QUARKUS_DATASOURCE_URL: jdbc:mysql://mysqlsrv:3306/bitcoin?autoReconnect=true
+    networks:
+      - mysql-compose-network
+    ports:
+      - 8080:8080
+    depends_on:
+      - mysqlsrv
+  mysqlsrv:
+    image: mysql:5.7
+    environment:
+      MYSQL_ROOT_PASSWORD: "root"
+      MYSQL_DATABASE: "bitcoin"
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./.docker-databse/data:/var/lib/mysql
+    networks:
+      - mysql-compose-network
+
+  adminer:
+    image: adminer
+    ports:
+      - 8888:8080
+    networks:
+      - mysql-compose-network
+
+networks:
+  mysql-compose-network:
+    driver: bridge

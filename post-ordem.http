@@ -1,0 +1,12 @@
+###
+POST http://localhost:8080/ordens
+Content-Type: application/json
+Authorization: Basic alura 123456
+
+{
+  "preco": 20.20,
+  "tipo": "COMPRA",
+  "userId": 5
+}
+
+###
